@@ -1,0 +1,15 @@
+Changes
+LICENSE
+MANIFEST
+META.json
+Makefile.PL
+README
+dist.ini
+lib/DBIx/Class/MaterializedPath.pm
+t/basic.t
+t/dual.t
+t/lib/A/Schema.pm
+t/lib/A/Schema/Result/Category.pm
+t/lib/A/Schema/Result/Human.pm
+t/lib/A/Schema/ResultSet.pm
+t/release-pod-syntax.t

@@ -1,0 +1,44 @@
+{
+   "abstract" : "efficiently retrieve and search trees with DBIx::Class",
+   "author" : [
+      "Arthur Axel \"fREW\" Schmidt <frioux+cpan@gmail.com>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.300020, CPAN::Meta::Converter version 2.120921",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "DBIx-Class-MaterializedPath",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Class::C3::Componentised" : "1.001000",
+            "DBIx::Class" : "0.08196",
+            "DBIx::Class::Helpers" : "2.007004",
+            "SQL::Translator" : "0.11011",
+            "Test::Deep" : "0.110",
+            "Test::More" : "0.98",
+            "perl" : "5.016000"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/frioux/DBIx-Class-MaterializedPath.git",
+         "web" : "http://github.com/frioux/DBIx-Class-MaterializedPath"
+      }
+   },
+   "version" : "0.001000"
+}
+
