@@ -1,6 +1,6 @@
 package DBIx::Class::MaterializedPath;
 {
-  $DBIx::Class::MaterializedPath::VERSION = '0.001000';
+  $DBIx::Class::MaterializedPath::VERSION = '0.001001';
 }
 
 # ABSTRACT: efficiently retrieve and search trees with DBIx::Class
@@ -187,8 +187,8 @@ sub _install_reverse_full_path_rel {
 
 1;
 
-
 __END__
+
 =pod
 
 =head1 NAME
@@ -197,7 +197,7 @@ DBIx::Class::MaterializedPath - efficiently retrieve and search trees with DBIx:
 
 =head1 VERSION
 
-version 0.001000
+version 0.001001
 
 =head1 SYNOPSIS
 
@@ -342,4 +342,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
