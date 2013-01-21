@@ -17,9 +17,9 @@ requires:
   DBIx::Class: 0.08196
   DBIx::Class::Helpers: 2.007004
   SQL::Translator: 0.11011
+  Sub::Current: 0.02
   Test::Deep: 0.110
   Test::More: 0.98
-  perl: 5.016000
 resources:
   repository: git://github.com/frioux/DBIx-Class-MaterializedPath.git
-version: 0.001001
+version: 0.002000

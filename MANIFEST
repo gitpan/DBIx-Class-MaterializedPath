@@ -7,6 +7,8 @@ Makefile.PL
 README
 dist.ini
 lib/DBIx/Class/MaterializedPath.pm
+lib/DBIx/Class/MaterializedPath/NativeRecursion.pm
+lib/DBIx/Class/MaterializedPath/SubCurrentRecursion.pm
 t/basic.t
 t/dual.t
 t/lib/A/Schema.pm

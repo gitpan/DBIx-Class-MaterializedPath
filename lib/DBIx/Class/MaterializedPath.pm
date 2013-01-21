@@ -1,14 +1,16 @@
 package DBIx::Class::MaterializedPath;
 {
-  $DBIx::Class::MaterializedPath::VERSION = '0.001001';
+  $DBIx::Class::MaterializedPath::VERSION = '0.002000';
 }
 
 # ABSTRACT: efficiently retrieve and search trees with DBIx::Class
 
-use 5.16.0;
+use strict;
 use warnings;
 
 use base 'DBIx::Class::Helper::Row::OnColumnChange';
+
+use English;
 
 use Class::C3::Componentised::ApplyHooks
    -before_apply => sub {
@@ -66,24 +68,23 @@ sub _set_materialized_path {
 sub _install_after_column_change {
    my ($self, $path_info) = @_;
 
+   my $method;
+
+   if ($PERL_VERSION >= 5.016) {
+      require DBIx::Class::MaterializedPath::NativeRecursion;
+   } else {
+      require DBIx::Class::MaterializedPath::SubCurrentRecursion;
+   }
+
+   $method = $self->_get_column_change_method( $path_info );
+
    for my $column (map $path_info->{$_}, qw(parent_column materialized_path_column)) {
       $self->after_column_change($column => {
          txn_wrap => 1,
 
          # XXX: is it worth installing this?
-         method => sub {
-            my $self = shift;
-
-            my $rel = $path_info->{children_relationship};
-            $self->_set_materialized_path($path_info);
-            __SUB__->($_) for $self->$rel->search({
-               # to avoid recursion
-               map +(
-                  "me.$_" => { '!=' => $self->get_column($_) },
-               ), $self->result_source->primary_columns
-            })->all
-         },
-      });
+         method => $method,
+      })
    }
 }
 
@@ -92,14 +93,24 @@ my %concat_operators = (
 );
 
 sub _get_concat {
-   my ($self, $rsrc) = @_;
+   my ($self, $rsrc, @substrings) = @_;
 
-   my $concat;
-   for (keys %concat_operators) {
-      return $concat_operators{$_} if $rsrc->storage->isa($_)
+   my $format;
+
+   if ($rsrc->storage->isa('DBIx::Class::Storage::DBI::mysql')) {
+      $format = q{CONCAT( %s, %s )};
+   } else {
+      my $concat_operator = '||';
+      for (keys %concat_operators) {
+         if ($rsrc->storage->isa($_)) {
+            $concat_operator = $concat_operators{ $_ };
+            last
+         }
+      }
+      $format = qq{%s $concat_operator %s};
    }
 
-   return '||'
+   return sprintf $format, @substrings;
 }
 
 sub _install_full_path_rel {
@@ -122,12 +133,16 @@ sub _install_full_path_rel {
             }
             : ()
          );
-         my $concat = $self->_get_concat($args->{self_resultsource});
+         my $concat = $self->_get_concat(
+            $args->{self_resultsource},
+            "$args->{foreign_alias}.$mp",
+            q{?},
+         );
 
          return ([{
                "$args->{self_alias}.$mp" => {
                   # TODO: add stupid storage mapping
-                  -like => \["$args->{foreign_alias}.$mp" . " $concat ?",
+                  -like => \[$concat,
                      [ {} => $rest ]
                   ],
                }
@@ -172,11 +187,14 @@ sub _install_reverse_full_path_rel {
             }
             : ()
          );
-         my $concat = $self->_get_concat($args->{self_resultsource});
-
+         my $concat = $self->_get_concat(
+            $args->{self_resultsource},
+            "$args->{self_alias}.$mp",
+            q{?},
+         );
          return [{
             "$args->{foreign_alias}.$mp" => {
-               -like => \["$args->{self_alias}.$mp" . " $concat ?",
+               -like => \[$concat,
                   [ {} => $rest ]
                ],
             }
@@ -197,7 +215,7 @@ DBIx::Class::MaterializedPath - efficiently retrieve and search trees with DBIx:
 
 =head1 VERSION
 
-version 0.001001
+version 0.002000
 
 =head1 SYNOPSIS
 
@@ -336,7 +354,7 @@ Arthur Axel "fREW" Schmidt <frioux+cpan@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Arthur Axel "fREW" Schmidt.
+This software is copyright (c) 2013 by Arthur Axel "fREW" Schmidt.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use 5.016000;
+
 
 use ExtUtils::MakeMaker 6.30;
 
@@ -24,10 +24,11 @@ my %WriteMakefileArgs = (
     "DBIx::Class" => "0.08196",
     "DBIx::Class::Helpers" => "2.007004",
     "SQL::Translator" => "0.11011",
+    "Sub::Current" => "0.02",
     "Test::Deep" => "0.110",
     "Test::More" => "0.98"
   },
-  "VERSION" => "0.001001",
+  "VERSION" => "0.002000",
   "test" => {
     "TESTS" => "t/*.t"
   }
