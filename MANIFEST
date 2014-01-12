@@ -5,6 +5,7 @@ META.json
 META.yml
 Makefile.PL
 README
+cpanfile
 dist.ini
 lib/DBIx/Class/MaterializedPath.pm
 lib/DBIx/Class/MaterializedPath/NativeRecursion.pm

@@ -1,6 +1,6 @@
 package DBIx::Class::MaterializedPath;
 {
-  $DBIx::Class::MaterializedPath::VERSION = '0.002000';
+  $DBIx::Class::MaterializedPath::VERSION = '0.002001';
 }
 
 # ABSTRACT: efficiently retrieve and search trees with DBIx::Class
@@ -8,6 +8,8 @@ package DBIx::Class::MaterializedPath;
 use strict;
 use warnings;
 
+use Module::Runtime 'use_module';
+use Try::Tiny;
 use base 'DBIx::Class::Helper::Row::OnColumnChange';
 
 use English;
@@ -88,27 +90,26 @@ sub _install_after_column_change {
    }
 }
 
-my %concat_operators = (
-   'DBIx::Class::Storage::DBI::MSSQL' => '+',
-);
+sub _introspector {
+   my $d = use_module('DBIx::Introspector')
+      ->new(drivers => '2013-12.01');
 
+   $d->decorate_driver_unconnected(MSSQL => concat_sql => sub { '%s + %s' });
+   $d->decorate_driver_unconnected(mysql => concat_sql => sub { 'CONCAT( %s, %s )' });
+
+   $d
+}
+
+my $d;
 sub _get_concat {
    my ($self, $rsrc, @substrings) = @_;
 
-   my $format;
+   my $storage = $rsrc->storage;
+   $storage->ensure_connected;
 
-   if ($rsrc->storage->isa('DBIx::Class::Storage::DBI::mysql')) {
-      $format = q{CONCAT( %s, %s )};
-   } else {
-      my $concat_operator = '||';
-      for (keys %concat_operators) {
-         if ($rsrc->storage->isa($_)) {
-            $concat_operator = $concat_operators{ $_ };
-            last
-         }
-      }
-      $format = qq{%s $concat_operator %s};
-   }
+   $d ||= $self->_introspector;
+
+   my $format = try { $d->get($storage->dbh, undef, 'concat_sql') } catch { '%s || %s' };
 
    return sprintf $format, @substrings;
 }
@@ -209,13 +210,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 DBIx::Class::MaterializedPath - efficiently retrieve and search trees with DBIx::Class
 
 =head1 VERSION
 
-version 0.002000
+version 0.002001
 
 =head1 SYNOPSIS
 
@@ -354,7 +357,7 @@ Arthur Axel "fREW" Schmidt <frioux+cpan@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Arthur Axel "fREW" Schmidt.
+This software is copyright (c) 2014 by Arthur Axel "fREW" Schmidt.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

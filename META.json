@@ -4,7 +4,7 @@
       "Arthur Axel \"fREW\" Schmidt <frioux+cpan@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300028, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.132830",
    "license" : [
       "perl_5"
    ],
@@ -26,24 +26,35 @@
       },
       "runtime" : {
          "requires" : {
-            "Class::C3::Componentised" : "1.001000",
+            "Class::C3::Componentised" : "1.001",
             "DBIx::Class" : "0.08196",
             "DBIx::Class::Helpers" : "2.007004",
+            "DBIx::Introspector" : "0",
+            "Module::Runtime" : "0",
             "SQL::Translator" : "0.11011",
             "Sub::Current" : "0.02",
-            "Test::Deep" : "0.110",
+            "Try::Tiny" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::Deep" : "0.11",
             "Test::More" : "0.98"
          }
       }
    },
    "release_status" : "stable",
    "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/frioux/DBIx-Class-MaterializedPath/issues"
+      },
+      "homepage" : "https://github.com/frioux/DBIx-Class-MaterializedPath",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/frioux/DBIx-Class-MaterializedPath.git",
-         "web" : "http://github.com/frioux/DBIx-Class-MaterializedPath"
+         "url" : "https://github.com/frioux/DBIx-Class-MaterializedPath.git",
+         "web" : "https://github.com/frioux/DBIx-Class-MaterializedPath"
       }
    },
-   "version" : "0.002000"
+   "version" : "0.002001"
 }
 

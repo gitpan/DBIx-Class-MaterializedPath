@@ -1,5 +1,9 @@
 Revision history for DBIx-Class-MaterializedPath
 
+0.002001  2014-01-12 10:29:07 America/Chicago
+  - Pick SQL for appending in a cleaner way
+  - Ditch RT
+
 0.002000  2013-01-21 15:30:32 CST6CDT
   - Add support for non-5.16 Perls (Jason McIntosh)
   - Add MySQL Compatibility (|| is not supported by default as concat)
